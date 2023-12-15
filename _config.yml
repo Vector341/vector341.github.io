@@ -1,6 +1,6 @@
 url: https://vector341.github.io
-theme: jekyll-theme-minimal
+theme: minima
 title: Vector's homepage
 author: Vector341
 description: Bookmark this to keep an eye on my project updates! To be filled.
-page_excerpts: true
+show_excerpts: true
