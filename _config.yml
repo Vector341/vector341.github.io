@@ -3,4 +3,4 @@ theme: jekyll-theme-minimal
 title: Vector's homepage
 author: Vector341
 description: Bookmark this to keep an eye on my project updates! To be filled.
-show_excerpts: true
+page_excerpts: true
