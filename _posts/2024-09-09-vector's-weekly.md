@@ -41,8 +41,11 @@ TODO 精读文章
 
 ### [google closure 库正式进入 Archived 状态](https://github.com/google/closure-library/issues/1214)
 
-TODO: 各个项目的替代，closure compiler 
+这是项目组于 2023 年 11 月 1 日发布的公告：2023 年 11 月 1 日，Closure Library 项目逐渐进入维护状态（maintenance mode），这一过程持续 10 个月，2024 年 8 月 1 日，项目正式进入 Archived 状态。此后，Closure Library 项目将不再接受新的功能请求和 bug 报告。
 
+公告中回顾了 Closure Library 项目的开发背景与发展历程，遗憾地表示该项目已经不适合现代 Web 开发。公告为项目的各个模块介绍了替代品，涵盖了 DOM 处理、网络请求、无障碍及测试等方面。
+
+> 我曾经接触过的项目使用 Closure Compiler 作为代码压缩器（打包器），在对源码一定的规范下，它有很好的压缩效果，公告也提及 Closure Compiler 的核心模块会继续维护。但可惜的是 Compiler 使用 Mozilla 的 rihno 引擎作为 JavaScript 运行时，它在一些非规范要求的场景下与 V8 表现差异较大，对项目代码提出更高的要求。
  
 
 ### [Firefox 计划禁用 HTTP/2 Push](https://news.ycombinator.com/item?id=41464334)
