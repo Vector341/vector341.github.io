@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "使用 v2ray 搭建代理服务器"
-categories: tutorial, v2ray
+categories: tutorial v2ray
 ---
 
 
