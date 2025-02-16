@@ -1,11 +1,9 @@
 ---
 layout: post
-title: "Vector's Weekly-20241028"
+title: "新闻周报：代码评审那些事儿"
 date: 2024-10-28
 categories: weekly
 ---
-
-# Vector's Weekly-20241028
 
 记录本周内浏览学习的各类知识
 

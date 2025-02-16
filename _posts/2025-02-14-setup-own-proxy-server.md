@@ -1,10 +1,10 @@
 ---
 layout: post
 title: "使用 v2ray 搭建代理服务器"
-categories: tutorial v2ray
+categories: tutorial
 ---
 
-
+v2ray 是一个基于 Go 语言开发的代理服务器，支持多种协议。后续的很多内核工具（如 xray 等）都是基于此项目分叉。
 
 ### 下载
 

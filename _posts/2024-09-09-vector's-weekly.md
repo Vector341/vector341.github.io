@@ -1,11 +1,9 @@
 ---
 layout: post
-title: "Vector's Weekly-20240907"
+title: "新闻周报：沉舟侧畔，千帆竞过"
 date: 2024-09-07
 categories: weekly
 ---
-
-# Vector's Weekly-20240907
 
 记录本周内浏览学习的各类知识
 
