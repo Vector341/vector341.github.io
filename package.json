@@ -1,0 +1,20 @@
+{
+  "name": "vector-blog",
+  "version": "1.0.0",
+  "description": "Vector341's blog",
+  "license": "MIT",
+  "repository": "vector341/vector341.github.io",
+  "author": "Vector341",
+  "homepage": "https://github.com/vector341/vector341.github.io",
+  "engines": {
+    "node": ">= 8.0.0"
+  },
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "vuepress": "^1.9.0"
+  }
+}
