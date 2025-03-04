@@ -1,6 +1,5 @@
 import { defineConfig } from "vuepress/config";
 export default defineConfig({
-  base: "/vector341.github.io/",
   title: "vector 的博客",
   description: "...",
   themeConfig: {
