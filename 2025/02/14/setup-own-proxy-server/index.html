@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>使用 v2ray 搭建代理服务器 | vector 的博客</title>
+    <meta name="generator" content="VuePress 1.9.10">
+    
+    <meta name="description" content="v2ray 是一个基于 Go 语言开发的代理服务器，支持多种协议。后续的很多内核工具（如 xray 等）都是基于此项目分叉。
+
+下载
+
+Linux 下 v2ray 有一个下载脚本，运行命令即可安装 ...">
+    
+    <link rel="preload" href="/assets/css/0.styles.d98ac11d.css" as="style"><link rel="preload" href="/assets/js/app.ff098235.js" as="script"><link rel="preload" href="/assets/js/4.8ec4f70b.js" as="script"><link rel="preload" href="/assets/js/1.12ba3317.js" as="script"><link rel="preload" href="/assets/js/18.fc3a30d0.js" as="script"><link rel="prefetch" href="/assets/js/11.bbe46144.js"><link rel="prefetch" href="/assets/js/12.feb38c55.js"><link rel="prefetch" href="/assets/js/13.da59f2bf.js"><link rel="prefetch" href="/assets/js/14.106eba89.js"><link rel="prefetch" href="/assets/js/15.f1877751.js"><link rel="prefetch" href="/assets/js/16.a32b1f42.js"><link rel="prefetch" href="/assets/js/17.57c2c54b.js"><link rel="prefetch" href="/assets/js/19.6829269c.js"><link rel="prefetch" href="/assets/js/2.6a63e167.js"><link rel="prefetch" href="/assets/js/20.9aa3688e.js"><link rel="prefetch" href="/assets/js/21.1886fb6e.js"><link rel="prefetch" href="/assets/js/22.658da7ef.js"><link rel="prefetch" href="/assets/js/3.4b8460b2.js"><link rel="prefetch" href="/assets/js/5.08307592.js"><link rel="prefetch" href="/assets/js/6.31eac88d.js"><link rel="prefetch" href="/assets/js/7.3cfed19d.js"><link rel="prefetch" href="/assets/js/8.308d9af2.js"><link rel="prefetch" href="/assets/js/vuejs-paginate.a73f878b.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d98ac11d.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div id="vuepress-theme-blog__global-layout"><section id="header-wrapper"><header id="header"><div class="header-wrapper"><div class="title"><a href="/" class="nav-link home-link">vector 的博客 </a></div> <div class="header-right-wrap"><!----> <div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <!----></div></div></header></section> <div id="mobile-header"><div class="mobile-header-bar"><div class="mobile-header-title"><a href="/" class="nav-link mobile-home-link">vector 的博客 </a> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></div> <div class="mobile-menu-wrapper"><hr class="menu-divider"> <!----></div></div></div> <div class="content-wrapper"><div id="vuepress-theme-blog__post-layout"><article itemscope="itemscope" itemtype="https://schema.org/BlogPosting" class="vuepress-blog-theme-content"><header><h1 itemprop="name headline" class="post-title">
+        使用 v2ray 搭建代理服务器
+      </h1> <div class="post-meta"><!----> <!----> <!----></div></header> <div itemprop="articleBody" class="content__default"><p>v2ray 是一个基于 Go 语言开发的代理服务器，支持多种协议。后续的很多内核工具（如 xray 等）都是基于此项目分叉。</p> <h3 id="下载"><a href="#下载" class="header-anchor">#</a> 下载</h3> <p>Linux 下 v2ray 有一个<a href="https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/refs/heads/master/install-release.sh" target="_blank" rel="noopener noreferrer">下载脚本<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>，运行命令即可安装。</p> <div class="language- extra-class"><pre class="language-text"><code>// 安裝執行檔和 .dat 資料檔
+# bash &lt;(curl -L https://raw.githubusercontent.com/v2fly/fhs-install-v2ray/master/install-release.sh)
+</code></pre></div><p><strong>该下载脚本不使用系统代理</strong>，而是使用命令行参数传入代理服务器地址，同时支持以下参数：</p> <blockquote><p>来源：https://www.v2ray.com/chapter_00/install.html#gosh</p> <p>install-release.sh 支持如下参数，可在手动安装时根据实际情况调整：</p> <ul><li><code>-p</code> 或 <code>--proxy</code>: 使用代理服务器来下载 V2Ray 的文件，格式与 curl 接受的参数一致，比如 <code>&quot;socks5://127.0.0.1:1080&quot;</code> 或 <code>&quot;http://127.0.0.1:3128&quot;</code>。</li> <li><code>-f</code> 或 <code>--force</code>: 强制安装。在默认情况下，如果当前系统中已有最新版本的 V2Ray，install-release.sh 会在检测之后就退出。如果需要强制重装一遍，则需要指定该参数。</li> <li><code>--version</code>: 指定需要安装的版本，比如 <code>&quot;v1.13&quot;</code>。默认值为最新版本。</li> <li><code>--local</code>: 使用一个本地文件进行安装。如果你已经下载了某个版本的 V2Ray，则可通过这个参数指定一个文件路径来进行安装。</li></ul> <p>示例：</p> <ul><li>使用地址为 127.0.0.1:1080 的 SOCKS 代理下载并安装最新版本：<code>./install-release.sh -p socks5://127.0.0.1:1080</code></li> <li>安装本地的 v1.13 版本：<code>./install-release.sh --version v1.13 --local /path/to/v2ray.zip</code></li></ul></blockquote> <p>使用 <code>--help</code> 查看完整使用说明。</p> <p>下载后默认二进制文件、日志和 service 的位置如下：</p> <div class="language- extra-class"><pre class="language-text"><code>installed: /usr/local/bin/v2ray
+installed: /usr/local/bin/v2ctl
+installed: /usr/local/share/v2ray/geoip.dat
+installed: /usr/local/share/v2ray/geosite.dat
+installed: /usr/local/etc/v2ray/config.json
+installed: /var/log/v2ray/
+installed: /var/log/v2ray/access.log
+installed: /var/log/v2ray/error.log
+installed: /etc/systemd/system/v2ray.service
+installed: /etc/systemd/system/v2ray@.service
+</code></pre></div><h3 id="配置"><a href="#配置" class="header-anchor">#</a> 配置</h3> <p>默认配置文件位置：<code>/usr/local/etc/v2ray/config.json</code> 客户端和服务器均相同</p> <p><strong>服务器配置</strong></p> <div class="language-json extra-class"><pre class="language-json"><code><span class="token punctuation">{</span>
+  <span class="token property">&quot;log&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;access&quot;</span><span class="token operator">:</span> <span class="token string">&quot;/var/log/v2ray/access.log&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;error&quot;</span><span class="token operator">:</span> <span class="token string">&quot;/var/log/v2ray/error.log&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;loglevel&quot;</span><span class="token operator">:</span> <span class="token string">&quot;debug&quot;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;inbounds&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;port&quot;</span><span class="token operator">:</span> <span class="token number">10086</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;protocol&quot;</span><span class="token operator">:</span> <span class="token string">&quot;vmess&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;settings&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;clients&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token punctuation">{</span>
+            <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;uuid&quot;</span>	<span class="token comment">// 使用 v2ray uuid 生成的随机 uuid</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">]</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;outbounds&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;protocol&quot;</span><span class="token operator">:</span> <span class="token string">&quot;freedom&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;settings&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>服务器需要打开上述端口10086，以 Amazon EC2 为例，需要在 security group 中新建一条 Inbound 规则</p> <p><strong>客户端配置</strong></p> <div class="language-json extra-class"><pre class="language-json"><code><span class="token punctuation">{</span>
+  <span class="token property">&quot;log&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;access&quot;</span><span class="token operator">:</span> <span class="token string">&quot;/var/log/v2ray/access.log&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;error&quot;</span><span class="token operator">:</span> <span class="token string">&quot;/var/log/v2ray/error.log&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;loglevel&quot;</span><span class="token operator">:</span> <span class="token string">&quot;debug&quot;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;inbounds&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;port&quot;</span><span class="token operator">:</span> <span class="token number">1080</span><span class="token punctuation">,</span> <span class="token comment">// SOCKS 代理端口，在浏览器中需配置代理并指向这个端口</span>
+      <span class="token property">&quot;listen&quot;</span><span class="token operator">:</span> <span class="token string">&quot;127.0.0.1&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;protocol&quot;</span><span class="token operator">:</span> <span class="token string">&quot;socks&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;settings&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;udp&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;port&quot;</span><span class="token operator">:</span> <span class="token number">1080</span><span class="token punctuation">,</span> <span class="token comment">// SOCKS 代理端口，在浏览器中需配置代理并指向这个端口</span>
+      <span class="token property">&quot;listen&quot;</span><span class="token operator">:</span> <span class="token string">&quot;127.0.0.1&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;protocol&quot;</span><span class="token operator">:</span> <span class="token string">&quot;http&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;settings&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;timeout&quot;</span><span class="token operator">:</span> <span class="token number">30</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;outbounds&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;protocol&quot;</span><span class="token operator">:</span> <span class="token string">&quot;vmess&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;settings&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">&quot;vnext&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token punctuation">{</span>
+            <span class="token property">&quot;address&quot;</span><span class="token operator">:</span> <span class="token string">&quot;x.x.x.x&quot;</span><span class="token punctuation">,</span> <span class="token comment">// 服务器地址</span>
+            <span class="token property">&quot;port&quot;</span><span class="token operator">:</span> <span class="token number">10086</span><span class="token punctuation">,</span>
+            <span class="token property">&quot;users&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+              <span class="token punctuation">{</span>
+                <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;uuid&quot;</span>  <span class="token comment">// 使用 v2ray uuid 生成的随机 uuid</span>
+              <span class="token punctuation">}</span>
+            <span class="token punctuation">]</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">]</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">&quot;protocol&quot;</span><span class="token operator">:</span> <span class="token string">&quot;freedom&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;tag&quot;</span><span class="token operator">:</span> <span class="token string">&quot;direct&quot;</span><span class="token punctuation">,</span>
+      <span class="token property">&quot;settings&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">&quot;routing&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;domainStrategy&quot;</span><span class="token operator">:</span> <span class="token string">&quot;IPOnDemand&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;rules&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;field&quot;</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;ip&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+          <span class="token string">&quot;geoip:private&quot;</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">&quot;outboundTag&quot;</span><span class="token operator">:</span> <span class="token string">&quot;direct&quot;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>需要注意的是在没有加 TLS 的情况，地址部分必须填写节点服务器IP地址</p> <p><em>注：以上配置是个人参考官方配置修改而来的最简单的可用配置，同时输出了详细的日志。更多配置可参考：https://github.com/v2fly/v2ray-examples</em></p> <h2 id="参考文档"><a href="#参考文档" class="header-anchor">#</a> 参考文档</h2> <ol><li>v2ray 官方文档：https://www.v2fly.org/ （注意：<a href="https://www.v2ray.com/en/" target="_blank" rel="noopener noreferrer">Project V · Project V Official<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>已过时，下载脚本和文档请参考 v2fly）</li> <li>v2ray 下载脚本：https://github.com/v2fly/fhs-install-v2ray</li> <li>v2ray 示例配置：https://github.com/v2fly/v2ray-examples</li> <li><a href="https://jiasupanda.com/vmess-vultr" target="_blank" rel="noopener noreferrer">VMess + Vultr 自建梯子新手指南 Clash V2ray VMess 配置保姆级教程 – 胖橙博客<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ol></div> <footer><!----> <hr> <!----></footer></article> <div class="sticker vuepress-toc"><div class="vuepress-toc-item vuepress-toc-h3 active"><a href="#下载" title="下载">下载</a></div><div class="vuepress-toc-item vuepress-toc-h3"><a href="#配置" title="配置">配置</a></div><div class="vuepress-toc-item vuepress-toc-h2"><a href="#参考文档" title="参考文档">参考文档</a></div></div></div></div> <footer class="footer" data-v-3d9deeb8><div class="footer-left-wrap" data-v-3d9deeb8><ul class="contact" data-v-3d9deeb8></ul></div> <div class="footer-right-wrap" data-v-3d9deeb8><ul class="copyright" data-v-3d9deeb8></ul></div></footer></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.ff098235.js" defer></script><script src="/assets/js/4.8ec4f70b.js" defer></script><script src="/assets/js/1.12ba3317.js" defer></script><script src="/assets/js/18.fc3a30d0.js" defer></script>
+  </body>
+</html>
