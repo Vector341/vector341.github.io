@@ -11,10 +11,13 @@
   },
   "scripts": {
     "docs:dev": "vuepress dev docs",
-    "docs:build": "vuepress build docs"
+    "docs:build": "vuepress build docs",
+    "blog:dev": "vuepress dev blog",
+    "blog:build": "vuepress build blog"
   },
   "devDependencies": {
+    "@vuepress/theme-blog": "^2.3.3",
     "prettier": "^3.5.3",
-    "vuepress": "^1.9.0"
+    "vuepress": "^1.9.10"
   }
 }
