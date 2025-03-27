@@ -205,10 +205,44 @@ module map
 ESModule 解析的三个阶段
 
 1. Construction — find, download, and parse all of the files into module records.
-2. Instantiation —find boxes in memory to place all of the exported values in (but don’t fill them in with values yet). Then make both exports and imports point to those boxes in memory. This is called linking.
+2. Instantiation —find boxes in memory to place all of the exported values in (but don’t fill them in with values yet). Then make both exports and imports point to those boxes in memory. This is called **linking**.
 3. Evaluation —run the code to fill in the boxes with the variables’ actual values.
 
 
+
+
+
+ES module spec 定义了如何将源码文件解析为 module records, 以及如何 instantiate 和 evaluate 模块，但是没有定义如何获取文件。Loader 负责获取文件，同时控制模块如何被加载。It calls the ES module methods — `ParseModule`, `Module.Instantiate`, and `Module.Evaluate`.
+
+
+
+### Construction
+
+Construction 可以分为以下三个阶段
+
+1. Figure out where to download the file containing the module from (aka module resolution)
+2. Fetch the file (by downloading it from a URL or loading it from the file system)
+3. Parse the file into a module record
+
+#### Module Resolution
+
+
+
+#### Fetch
+
+
+
+#### Parse
+
+
+
+### 互操作性
+
+互操作性的前提是搞清楚 node 如何将一个文件判断为 ESM 或 CJS https://nodejs.org/api/packages.html#determining-module-system
+
+import 只能在 ES Module 中使用，可以引用 CJS 和 ES. import() 可以在 ES 和 CJS 中使用
+
+require 只能在 CJS 中使用，引用 ES Module 时有特殊要求（top-level await)
 
 
 
