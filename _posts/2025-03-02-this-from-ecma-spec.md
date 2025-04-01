@@ -3,17 +3,15 @@ title: 从 ECMA 规范看 this 指向
 category: javascript
 ---
 
-
-
 ## 前言
 
-在《JavaScript深入之执行上下文栈》中讲到，当JavaScript代码执行一段可执行代码(executable code)时，会创建对应的执行上下文(execution context)。
+在《JavaScript 深入之执行上下文栈》中讲到，当 JavaScript 代码执行一段可执行代码(executable code)时，会创建对应的执行上下文(execution context)。
 
 对于每个执行上下文，都有三个重要属性
 
-* 变量对象(Variable object，VO)
-* 作用域链(Scope chain)
-* this
+-   变量对象(Variable object，VO)
+-   作用域链(Scope chain)
+-   this
 
 今天重点讲讲 this，然而不好讲。
 
@@ -30,6 +28,7 @@ category: javascript
 让我们开始了解规范吧！
 
 ## Types
+
 首先是第 8 章 Types：
 
 > Types are further subclassified into ECMAScript language types and specification types.
@@ -40,7 +39,7 @@ category: javascript
 
 ECMAScript 的类型分为语言类型和规范类型。
 
-ECMAScript 语言类型是开发者直接使用 ECMAScript 可以操作的。其实就是我们常说的Undefined, Null, Boolean, String, Number, 和 Object。
+ECMAScript 语言类型是开发者直接使用 ECMAScript 可以操作的。其实就是我们常说的 Undefined, Null, Boolean, String, Number, 和 Object。
 
 > 注：新增 Symbol (ES6), BigInt (ES2020)
 
@@ -53,6 +52,7 @@ ECMAScript 语言类型是开发者直接使用 ECMAScript 可以操作的。其
 今天我们要讲的重点是便是其中的 Reference 类型。它与 this 的指向有着密切的关联。
 
 ## Reference
+
 那什么又是 Reference ？
 
 让我们看 [6.2.5 The Reference Record Specification Type](https://tc39.es/ecma262/#sec-reference-record-specification-type)：
@@ -71,19 +71,19 @@ ECMAScript 语言类型是开发者直接使用 ECMAScript 可以操作的。其
 
 [Table 8: Reference RecordFields](https://tc39.es/ecma262/#table-reference-record-fields)
 
-| Field Name         | Value                                                        | Meaning                                                      |
-| ------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| [[Base]]           | an [ECMAScript language value](https://tc39.es/ecma262/#sec-ecmascript-language-types), an [Environment Record](https://tc39.es/ecma262/#sec-environment-records), or unresolvable | The value or [Environment Record](https://tc39.es/ecma262/#sec-environment-records) which holds the binding. A [[Base]] of unresolvable indicates that the binding could not be resolved. |
-| [[ReferencedName]] | an [ECMAScript language value](https://tc39.es/ecma262/#sec-ecmascript-language-types) or a [Private Name](https://tc39.es/ecma262/#sec-private-names) | The name of the binding. Always a String if [[Base]] value is an [Environment Record](https://tc39.es/ecma262/#sec-environment-records). Otherwise, may be an [ECMAScript language value](https://tc39.es/ecma262/#sec-ecmascript-language-types) other than a String or a Symbol until [ToPropertyKey](https://tc39.es/ecma262/#sec-topropertykey) is performed. |
-| [[Strict]]         | a Boolean                                                    | true if the [Reference Record](https://tc39.es/ecma262/#sec-reference-record-specification-type) originated in [strict mode code](https://tc39.es/ecma262/#sec-strict-mode-code), false otherwise. |
-| [[ThisValue]]      | an [ECMAScript language value](https://tc39.es/ecma262/#sec-ecmascript-language-types) or empty | If not empty, the [Reference Record](https://tc39.es/ecma262/#sec-reference-record-specification-type) represents a property binding that was expressed using the `super` [keyword](https://tc39.es/ecma262/#sec-keywords-and-reserved-words); it is called a Super Reference Record and its [[Base]] value will never be an [Environment Record](https://tc39.es/ecma262/#sec-environment-records). In that case, the [[ThisValue]] field holds the this value at the time the [Reference Record](https://tc39.es/ecma262/#sec-reference-record-specification-type) was created. |
+| Field Name         | Value                                                                                                                                                                              | Meaning                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [[Base]]           | an [ECMAScript language value](https://tc39.es/ecma262/#sec-ecmascript-language-types), an [Environment Record](https://tc39.es/ecma262/#sec-environment-records), or unresolvable | The value or [Environment Record](https://tc39.es/ecma262/#sec-environment-records) which holds the binding. A [[Base]] of unresolvable indicates that the binding could not be resolved.                                                                                                                                                                                                                                                                                                                                                                                         |
+| [[ReferencedName]] | an [ECMAScript language value](https://tc39.es/ecma262/#sec-ecmascript-language-types) or a [Private Name](https://tc39.es/ecma262/#sec-private-names)                             | The name of the binding. Always a String if [[Base]] value is an [Environment Record](https://tc39.es/ecma262/#sec-environment-records). Otherwise, may be an [ECMAScript language value](https://tc39.es/ecma262/#sec-ecmascript-language-types) other than a String or a Symbol until [ToPropertyKey](https://tc39.es/ecma262/#sec-topropertykey) is performed.                                                                                                                                                                                                                 |
+| [[Strict]]         | a Boolean                                                                                                                                                                          | true if the [Reference Record](https://tc39.es/ecma262/#sec-reference-record-specification-type) originated in [strict mode code](https://tc39.es/ecma262/#sec-strict-mode-code), false otherwise.                                                                                                                                                                                                                                                                                                                                                                                |
+| [[ThisValue]]      | an [ECMAScript language value](https://tc39.es/ecma262/#sec-ecmascript-language-types) or empty                                                                                    | If not empty, the [Reference Record](https://tc39.es/ecma262/#sec-reference-record-specification-type) represents a property binding that was expressed using the `super` [keyword](https://tc39.es/ecma262/#sec-keywords-and-reserved-words); it is called a Super Reference Record and its [[Base]] value will never be an [Environment Record](https://tc39.es/ecma262/#sec-environment-records). In that case, the [[ThisValue]] field holds the this value at the time the [Reference Record](https://tc39.es/ecma262/#sec-reference-record-specification-type) was created. |
 
 这张表讲述了 Reference 的构成，由三个组成部分，分别是：
 
-* base value
-* ReferencedName
-* strict 
-* ThisValue
+-   base value
+-   ReferencedName
+-   strict
+-   ThisValue
 
 我们简单的理解的话：
 
@@ -99,8 +99,8 @@ var foo = 1;
 // 对应的Reference是：
 var fooReference = {
     base: EnvironmentRecord,
-    ReferencedName: 'foo',
-    strict: false
+    ReferencedName: "foo",
+    strict: false,
 };
 ```
 
@@ -110,7 +110,7 @@ var fooReference = {
 var foo = {
     bar: function () {
         return this;
-    }
+    },
 };
 
 foo.bar(); // foo
@@ -118,8 +118,8 @@ foo.bar(); // foo
 // bar对应的Reference是：
 var BarReference = {
     base: foo,
-    ReferencedName: 'bar',
-    strict: false
+    ReferencedName: "bar",
+    strict: false,
 };
 ```
 
@@ -136,9 +136,9 @@ var BarReference = {
 2.IsPropertyReference
 
 > 1.  If V.[[Base]] is unresolvable, return false.
-> 2. If V.[[Base]] is an [Environment Record](https://tc39.es/ecma262/#sec-environment-records), return false; otherwise return true.
+> 2.  If V.[[Base]] is an [Environment Record](https://tc39.es/ecma262/#sec-environment-records), return false; otherwise return true.
 
-简单的理解：如果 base value 是一个对象，就返回true。
+简单的理解：如果 base value 是一个对象，就返回 true。
 
 6.2.5.7 GetThisValue ( V )
 
@@ -149,6 +149,7 @@ var BarReference = {
 > 2. If [IsSuperReference](https://tc39.es/ecma262/#sec-issuperreference)(V) is true, return V.[[ThisValue]]; otherwise return V.[[Base]].
 
 ## GetValue
+
 除此之外，紧接着在 8.7.1 章规范中就讲了一个用于从 Reference 类型获取对应值的方法： GetValue。
 
 简单模拟 GetValue 的使用：
@@ -156,9 +157,9 @@ var BarReference = {
 var foo = 1;
 
 var fooReference = {
-    base: EnvironmentRecord,
-    name: 'foo',
-    strict: false
+base: EnvironmentRecord,
+name: 'foo',
+strict: false
 };
 
 GetValue(fooReference) // 1;
@@ -168,7 +169,8 @@ GetValue 返回对象属性真正的值，但是要注意：
 
 这个很重要，这个很重要，这个很重要。
 
-## 如何确定this的值
+## 如何确定 this 的值
+
 关于 Reference 讲了那么多，为什么要讲 Reference 呢？到底 Reference 跟本文的主题 this 有哪些关联呢？如果你能耐心看完之前的内容，以下开始进入高能阶段：
 
 看规范 11.2.3 Function Calls：
@@ -218,6 +220,7 @@ GetValue 返回对象属性真正的值，但是要注意：
 ```
 
 ## 具体分析
+
 让我们一步一步看：
 
 1. 计算 MemberExpression 的结果赋值给 ref
@@ -226,25 +229,25 @@ GetValue 返回对象属性真正的值，但是要注意：
 
 MemberExpression :
 
-* PrimaryExpression // 原始表达式 可以参见《JavaScript权威指南第四章》
-* FunctionExpression    // 函数定义表达式
-* MemberExpression [ Expression ] // 属性访问表达式
-* MemberExpression . IdentifierName // 属性访问表达式
-* new MemberExpression Arguments    // 对象创建表达式
+-   PrimaryExpression // 原始表达式 可以参见《JavaScript 权威指南第四章》
+-   FunctionExpression // 函数定义表达式
+-   MemberExpression [ Expression ] // 属性访问表达式
+-   MemberExpression . IdentifierName // 属性访问表达式
+-   new MemberExpression Arguments // 对象创建表达式
 
 举个例子：
 
 ```javascript
 function foo() {
-    console.log(this)
+    console.log(this);
 }
 
 foo(); // MemberExpression 是 foo
 
 function foo() {
-    return function() {
-        console.log(this)
-    }
+    return function () {
+        console.log(this);
+    };
 }
 
 foo()(); // MemberExpression 是 foo()
@@ -252,18 +255,17 @@ foo()(); // MemberExpression 是 foo()
 var foo = {
     bar: function () {
         return this;
-    }
-}
+    },
+};
 
 foo.bar(); // MemberExpression 是 foo.bar
 ```
-
 
 所以简单理解 MemberExpression 其实就是()左边的部分。
 
 2.判断 ref 是不是一个 Reference 类型。
 
-关键就在于看规范是如何处理各种 MemberExpression，返回的结果是不是一个Reference类型。
+关键就在于看规范是如何处理各种 MemberExpression，返回的结果是不是一个 Reference 类型。
 
 举最后一个例子：
 
@@ -271,16 +273,16 @@ foo.bar(); // MemberExpression 是 foo.bar
 var value = 1;
 
 var foo = {
-  value: 2,
-  bar: function () {
-    return this.value;
-  }
-}
+    value: 2,
+    bar: function () {
+        return this.value;
+    },
+};
 
 //示例1
 console.log(foo.bar());
 //示例2
-console.log((foo.bar)());
+console.log(foo.bar());
 //示例3
 console.log((foo.bar = foo.bar)());
 //示例4
@@ -289,8 +291,8 @@ console.log((false || foo.bar)());
 console.log((foo.bar, foo.bar)());
 ```
 
-
 ### foo.bar()
+
 在示例 1 中，MemberExpression 计算的结果是 foo.bar，那么 foo.bar 是不是一个 Reference 呢？
 
 查看规范 11.2.1 Property Accessors，这里展示了一个计算的过程，什么都不管了，就看最后一步：
@@ -302,9 +304,9 @@ console.log((foo.bar, foo.bar)());
 根据之前的内容，我们知道该值为：
 
 var Reference = {
-  base: foo,
-  name: 'bar',
-  strict: false
+base: foo,
+name: 'bar',
+strict: false
 };
 接下来按照 2.1 的判断流程走：
 
@@ -319,12 +321,13 @@ base value 为 foo，是一个对象，所以 IsPropertyReference(ref) 结果为
 这个时候我们就可以确定 this 的值了：
 
 this = GetBase(ref)，
-GetBase 也已经铺垫了，获得 base value 值，这个例子中就是foo，所以 this 的值就是 foo ，示例1的结果就是 2！
+GetBase 也已经铺垫了，获得 base value 值，这个例子中就是 foo，所以 this 的值就是 foo ，示例 1 的结果就是 2！
 
-唉呀妈呀，为了证明 this 指向foo，真是累死我了！但是知道了原理，剩下的就更快了。
+唉呀妈呀，为了证明 this 指向 foo，真是累死我了！但是知道了原理，剩下的就更快了。
 
 ### (foo.bar)()
-看示例2：
+
+看示例 2：
 
 console.log((foo.bar)());
 foo.bar 被 () 包住，查看规范 11.1.6 The Grouping Operator
@@ -338,7 +341,8 @@ foo.bar 被 () 包住，查看规范 11.1.6 The Grouping Operator
 实际上 () 并没有对 MemberExpression 进行计算，所以其实跟示例 1 的结果是一样的。
 
 ### (foo.bar = foo.bar)()
-看示例3，有赋值操作符，查看规范 11.13.1 Simple Assignment ( = ):
+
+看示例 3，有赋值操作符，查看规范 11.13.1 Simple Assignment ( = ):
 
 计算的第三步：
 
@@ -348,12 +352,13 @@ foo.bar 被 () 包住，查看规范 11.1.6 The Grouping Operator
 
 按照之前讲的判断逻辑：
 
-> 2.3 如果 ref 不是Reference，那么 this 的值为 undefined
+> 2.3 如果 ref 不是 Reference，那么 this 的值为 undefined
 
 this 为 undefined，非严格模式下，this 的值为 undefined 的时候，其值会被隐式转换为全局对象。
 
 ### (false || foo.bar)()
-看示例4，逻辑与算法，查看规范 11.11 Binary Logical Operators：
+
+看示例 4，逻辑与算法，查看规范 11.11 Binary Logical Operators：
 
 计算第二步：
 
@@ -362,7 +367,8 @@ this 为 undefined，非严格模式下，this 的值为 undefined 的时候，�
 因为使用了 GetValue，所以返回的不是 Reference 类型，this 为 undefined
 
 ### (foo.bar, foo.bar)()
-看示例5，逗号操作符，查看规范11.14 Comma Operator ( , )
+
+看示例 5，逗号操作符，查看规范 11.14 Comma Operator ( , )
 
 计算第二步：
 
@@ -371,43 +377,45 @@ this 为 undefined，非严格模式下，this 的值为 undefined 的时候，�
 因为使用了 GetValue，所以返回的不是 Reference 类型，this 为 undefined
 
 ### 揭晓结果
+
 所以最后一个例子的结果是：
 
 var value = 1;
 
 var foo = {
-  value: 2,
-  bar: function () {
-    return this.value;
-  }
+value: 2,
+bar: function () {
+return this.value;
+}
 }
 
-//示例1
+//示例 1
 console.log(foo.bar()); // 2
-//示例2
+//示例 2
 console.log((foo.bar)()); // 2
-//示例3
+//示例 3
 console.log((foo.bar = foo.bar)()); // 1
-//示例4
+//示例 4
 console.log((false || foo.bar)()); // 1
-//示例5
+//示例 5
 console.log((foo.bar, foo.bar)()); // 1
 注意：以上是在非严格模式下的结果，严格模式下因为 this 返回 undefined，所以示例 3 会报错。
 
 ### 补充
+
 最最后，忘记了一个最最普通的情况：
 
 function foo() {
-    console.log(this)
+console.log(this)
 }
 
-foo(); 
+foo();
 MemberExpression 是 foo，解析标识符，查看规范 10.3.1 Identifier Resolution，会返回一个 Reference 类型的值：
 
 var fooReference = {
-    base: EnvironmentRecord,
-    name: 'foo',
-    strict: false
+base: EnvironmentRecord,
+name: 'foo',
+strict: false
 };
 接下来进行判断：
 
@@ -417,7 +425,7 @@ var fooReference = {
 
 IsPropertyReference(ref) 的结果为 false，进入下个判断：
 
-> 2.2 如果 ref 是 Reference，并且 base value 值是 Environment Record, 那么this的值为 ImplicitThisValue(ref)
+> 2.2 如果 ref 是 Reference，并且 base value 值是 Environment Record, 那么 this 的值为 ImplicitThisValue(ref)
 
 base value 正是 Environment Record，所以会调用 ImplicitThisValue(ref)
 
@@ -426,15 +434,16 @@ base value 正是 Environment Record，所以会调用 ImplicitThisValue(ref)
 所以最后 this 的值就是 undefined。
 
 ## 多说一句
+
 尽管我们可以简单的理解 this 为调用函数的对象，如果是这样的话，如何解释下面这个例子呢？
 
 var value = 1;
 
 var foo = {
-  value: 2,
-  bar: function () {
-    return this.value;
-  }
+value: 2,
+bar: function () {
+return this.value;
+}
 }
 console.log((false || foo.bar)()); // 1
 此外，又如何确定调用函数的对象是谁呢？在写文章之初，我就面临着这些问题，最后还是放弃从多个情形下给大家讲解 this 指向的思路，而是追根溯源的从 ECMASciript 规范讲解 this 的指向，尽管从这个角度写起来和读起来都比较吃力，但是一旦多读几遍，明白原理，绝对会给你一个全新的视角看待 this 。而你也就能明白，尽管 foo() 和 (foo.bar = foo.bar)() 最后结果都指向了 undefined，但是两者从规范的角度上却有着本质的区别。
@@ -442,11 +451,13 @@ console.log((false || foo.bar)()); // 1
 此篇讲解执行上下文的 this，即便不是很理解此篇的内容，依然不影响大家了解执行上下文这个主题下其他的内容。所以，依然可以安心的看下一篇文章。
 
 ## 下一篇文章
-[《JavaScript深入之执行上下文》](https://github.com/mqyqingfeng/Blog/issues/8)
+
+[《JavaScript 深入之执行上下文》](https://github.com/mqyqingfeng/Blog/issues/8)
 
 ## 深入系列
-JavaScript深入系列目录地址：https://github.com/mqyqingfeng/Blog。
 
-JavaScript深入系列预计写十五篇左右，旨在帮大家捋顺JavaScript底层知识，重点讲解如原型、作用域、执行上下文、变量对象、this、闭包、按值传递、call、apply、bind、new、继承等难点概念。
+JavaScript 深入系列目录地址：https://github.com/mqyqingfeng/Blog。
 
-如果有错误或者不严谨的地方，请务必给予指正，十分感谢。如果喜欢或者有所启发，欢迎star，对作者也是一种鼓励。
+JavaScript 深入系列预计写十五篇左右，旨在帮大家捋顺 JavaScript 底层知识，重点讲解如原型、作用域、执行上下文、变量对象、this、闭包、按值传递、call、apply、bind、new、继承等难点概念。
+
+如果有错误或者不严谨的地方，请务必给予指正，十分感谢。如果喜欢或者有所启发，欢迎 star，对作者也是一种鼓励。

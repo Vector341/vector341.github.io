@@ -1,8 +1,7 @@
 ---
 title: JavaScript 中的 Stream
+category: javascript
 ---
-
-
 
 ### ReadStream 处理框架
 
@@ -25,15 +24,13 @@ return new ReadableStream({
         }
 
         controller.enqueue(value);
-        pump();  
+        pump();
       });
     }
     pump();
   }
 })
 ```
-
-
 
 #### 使用 async 的循环写法
 
@@ -62,11 +59,9 @@ return new ReadableStream({
 
 ```
 
-
-
 #### async iterator 写法
 
-````
+```
 return new ReadableStream({
   async start(controller) {
     for await (const chunk of rs) {
@@ -75,9 +70,7 @@ return new ReadableStream({
     controller.close();
   }
 })
-````
-
-
+```
 
 ### 关闭 Stream
 
@@ -89,12 +82,7 @@ If you wanted to completely get rid of the stream and discard any enqueued chunk
 
 调用 Reader 的 cancel 方法会彻底关闭 stream 并丢弃所有 enqueued 的 chunks.
 
-
-
 ### 参考
 
 1. Stream concept：https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Concepts
 2. [Using readable streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams)
-
-
-

@@ -5,12 +5,12 @@ category: javascript
 
 # 4 环境：变量的底层机制
 
-- [4.1 环境：管理变量的数据结构](https://chatgpt.com/c/67c48d33-d2b0-8004-aa1b-03ff0db64b02#41-环境管理变量的数据结构)
-- 4.2 通过环境实现递归
-  - [4.2.1 代码执行](https://chatgpt.com/c/67c48d33-d2b0-8004-aa1b-03ff0db64b02#421-代码执行)
-- 4.3 通过环境实现嵌套作用域
-  - [4.3.1 代码执行](https://chatgpt.com/c/67c48d33-d2b0-8004-aa1b-03ff0db64b02#431-代码执行)
-- [4.4 闭包与环境](https://chatgpt.com/c/67c48d33-d2b0-8004-aa1b-03ff0db64b02#44-闭包与环境)
+-   [4.1 环境：管理变量的数据结构](https://chatgpt.com/c/67c48d33-d2b0-8004-aa1b-03ff0db64b02#41-环境管理变量的数据结构)
+-   4.2 通过环境实现递归
+    -   [4.2.1 代码执行](https://chatgpt.com/c/67c48d33-d2b0-8004-aa1b-03ff0db64b02#421-代码执行)
+-   4.3 通过环境实现嵌套作用域
+    -   [4.3.1 代码执行](https://chatgpt.com/c/67c48d33-d2b0-8004-aa1b-03ff0db64b02#431-代码执行)
+-   [4.4 闭包与环境](https://chatgpt.com/c/67c48d33-d2b0-8004-aa1b-03ff0db64b02#44-闭包与环境)
 
 在本章中，我们将深入了解 ECMAScript 语言规范如何处理变量。
 
@@ -18,13 +18,11 @@ category: javascript
 
 **环境(Environment Record)**是 ECMAScript 规范用于管理变量的数据结构。它是一个字典，键是变量名，值是这些变量的值。每个**作用域(scope)**都有其关联的环境。环境必须能够支持与变量相关的以下现象：
 
-- 递归 Recursion
-- 嵌套作用域 Nested Scope
-- 闭包 Closure
+-   递归 Recursion
+-   嵌套作用域 Nested Scope
+-   闭包 Closure
 
 我们将通过示例来说明如何处理每种现象。
-
-
 
 ## 4.2 通过环境实现递归
 
@@ -32,11 +30,11 @@ category: javascript
 
 ```javascript
 function f(x) {
-  return x * 2;
+    return x * 2;
 }
 function g(y) {
-  const tmp = y + 1;
-  return f(tmp);
+    const tmp = y + 1;
+    return f(tmp);
 }
 assert.equal(g(3), 8);
 ```
@@ -49,13 +47,13 @@ assert.equal(g(3), 8);
 
 ```javascript
 function f(x) {
-  // 暂停 3
-  return x * 2;
+    // 暂停 3
+    return x * 2;
 }
 function g(y) {
-  const tmp = y + 1;
-  // 暂停 2
-  return f(tmp);
+    const tmp = y + 1;
+    // 暂停 2
+    return f(tmp);
 }
 // 暂停 1
 assert.equal(g(3), 8);
@@ -63,15 +61,13 @@ assert.equal(g(3), 8);
 
 具体过程如下：
 
-- **暂停 1** – 调用 `g()` 之前。执行上下文栈有一个条目，指向顶层环境。在该环境中，有两个条目；一个用于 `f()`，一个用于 `g()`。
-- **暂停 2** – 执行 `g()` 时。执行上下文栈的顶部指向为 `g()` 创建的环境。该环境包含参数 `y` 和局部变量 `tmp` 的条目。
-- **暂停 3** – 执行 `f()` 时。执行上下文的顶部现在指向 `f()` 的环境。
+-   **暂停 1** – 调用 `g()` 之前。执行上下文栈有一个条目，指向顶层环境。在该环境中，有两个条目；一个用于 `f()`，一个用于 `g()`。
+-   **暂停 2** – 执行 `g()` 时。执行上下文栈的顶部指向为 `g()` 创建的环境。该环境包含参数 `y` 和局部变量 `tmp` 的条目。
+-   **暂停 3** – 执行 `f()` 时。执行上下文的顶部现在指向 `f()` 的环境。
 
 每次遇到 `return` 时，执行上下文栈都会移除一个上下文。
 
 TODO: 补充图片
-
-
 
 ## 4.3 通过环境实现嵌套作用域
 
@@ -79,19 +75,19 @@ TODO: 补充图片
 
 ```javascript
 function f(x) {
-  function square() {
-    const result = x * x;
-    return result;
-  }
-  return square();
+    function square() {
+        const result = x * x;
+        return result;
+    }
+    return square();
 }
 assert.equal(f(6), 36);
 ```
 
 这里，我们有三个嵌套的作用域：顶层作用域、`f()` 的作用域和 `square()` 的作用域。观察如下：
 
-- 这些作用域是相互连接的。内部作用域“继承”外部作用域的所有变量（减去被遮蔽shadowing的变量）。
-- 作为一种机制，嵌套作用域独立于递归。后者最好通过独立环境的栈来管理。前者是每个环境与其创建时所处环境之间的关系。
+-   这些作用域是相互连接的。内部作用域“继承”外部作用域的所有变量（减去被遮蔽 shadowing 的变量）。
+-   作为一种机制，嵌套作用域独立于递归。后者最好通过独立环境的栈来管理。前者是每个环境与其创建时所处环境之间的关系。
 
 因此，每个作用域的环境通过一个名为 `outer` 的字段指向外围作用域的环境。当我们查找变量的值时，首先在当前环境中搜索其名称，然后在外部环境中搜索，依此类推。整个外部环境链包含所有当前可访问的变量（减去被遮蔽的变量）。
 
@@ -117,9 +113,9 @@ assert.equal(f(6), 36);
 
 具体发生的情况如下：
 
-- **暂停 1** – 在调用 `f()` 之前（图 4）。
-- **暂停 2** – 在执行 `f()` 期间（图 5）。
-- **暂停 3** – 在执行 `square()` 期间（图 6）。
+-   **暂停 1** – 在调用 `f()` 之前（图 4）。
+-   **暂停 2** – 在执行 `f()` 期间（图 5）。
+-   **暂停 3** – 在执行 `square()` 期间（图 6）。
 
 在这些步骤之后，`return` 语句会依次将执行条目从栈中弹出。
 
@@ -143,17 +139,16 @@ graph TD
 
 之前的模式再次出现：最新环境的 `outer` 通过我们刚刚调用的函数的 `[[Scope]]` 进行设置。通过 `outer` 形成的作用域链包含当前所有可访问的变量。例如，我们可以访问 `result`、`square` 和 `f`。**环境反映了变量的两个方面。首先，`outer` 作用域链反映了静态作用域的嵌套结构。其次，执行上下文的栈反映了动态函数调用的过程。**
 
-
-
 # 4.4 闭包与环境
 
 为了了解环境如何用于实现闭包，我们来看以下示例：
 
 ```javascript
 function add(x) {
-  return (y) => { // (A)
-    return x + y;
-  };
+    return (y) => {
+        // (A)
+        return x + y;
+    };
 }
 assert.equal(add(3)(1), 4); // (B)
 ```
@@ -177,10 +172,10 @@ assert.equal(plus2(5), 7);
 
 ```javascript
 function add(x) {
-  return (y) => {
-    // 暂停 3：plus2(5)
-    return x + y;
-  };
+    return (y) => {
+        // 暂停 3：plus2(5)
+        return x + y;
+    };
 } // 暂停 1：add(2)
 const plus2 = add(2);
 // 暂停 2
@@ -189,9 +184,9 @@ assert.equal(plus2(5), 7);
 
 具体过程如下：
 
-- **暂停 1** – 在执行 `add(2)` 期间（图 7）。
-- **暂停 2** – 在 `add(2)` 执行完成之后（图 8）。
-- **暂停 3** – 在执行 `plus2(5)` 期间（图 9）。
+-   **暂停 1** – 在执行 `add(2)` 期间（图 7）。
+-   **暂停 2** – 在 `add(2)` 执行完成之后（图 8）。
+-   **暂停 3** – 在执行 `plus2(5)` 期间（图 9）。
 
 **图 7：闭包，暂停 1 – 执行 `add(2)` 期间**
 
@@ -237,10 +232,6 @@ graph TD
   add环境 --> x[变量 x = 2]
 ```
 
-
-
-
-
 ```mermaid
 graph TD
   subgraph 执行上下文栈
@@ -255,29 +246,23 @@ graph TD
   add返回的函数 -.->|[[Scope]]| 调用帧1
 ```
 
-
-
-
-
-
-
 ## 参考
 
-- 本文主要参考了 Exploringjs 网站的 Deep JS 一书 https://exploringjs.com/deep-js/ch_environments.html
-- 图片中的 Lexical Environment 是执行上下文的一个属性，见 https://tc39.es/ecma262/#table-additional-state-components-for-ecmascript-code-execution-contexts
+-   本文主要参考了 Exploringjs 网站的 Deep JS 一书 https://exploringjs.com/deep-js/ch_environments.html
+-   图片中的 Lexical Environment 是执行上下文的一个属性，见 https://tc39.es/ecma262/#table-additional-state-components-for-ecmascript-code-execution-contexts
 
 Table 26: Additional State Components for ECMAScript Code Execution Contexts
 
-| Component           | Purpose                                                      |
-| ------------------- | ------------------------------------------------------------ |
-| LexicalEnvironment  | Identifies the [Environment Record](https://tc39.es/ecma262/#sec-environment-records) used to resolve identifier references made by code within this [execution context](https://tc39.es/ecma262/#sec-execution-contexts). |
-| VariableEnvironment | Identifies the [Environment Record](https://tc39.es/ecma262/#sec-environment-records) that holds bindings created by [VariableStatement](https://tc39.es/ecma262/#prod-VariableStatement)s within this [execution context](https://tc39.es/ecma262/#sec-execution-contexts). |
+| Component           | Purpose                                                                                                                                                                                                                                                                                                             |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| LexicalEnvironment  | Identifies the [Environment Record](https://tc39.es/ecma262/#sec-environment-records) used to resolve identifier references made by code within this [execution context](https://tc39.es/ecma262/#sec-execution-contexts).                                                                                          |
+| VariableEnvironment | Identifies the [Environment Record](https://tc39.es/ecma262/#sec-environment-records) that holds bindings created by [VariableStatement](https://tc39.es/ecma262/#prod-VariableStatement)s within this [execution context](https://tc39.es/ecma262/#sec-execution-contexts).                                        |
 | PrivateEnvironment  | Identifies the [PrivateEnvironment Record](https://tc39.es/ecma262/#privateenvironment-record) that holds [Private Names](https://tc39.es/ecma262/#sec-private-names) created by [ClassElement](https://tc39.es/ecma262/#prod-ClassElement)s in the nearest containing class. null if there is no containing class. |
 
-- 执行上下文的 Lexical Environment 指向的对象是一个 Environment Record，它有一个属性 `[[outerEnv]]` 指向外层的环境（对于 Global Environment Record 它是 null）
+-   执行上下文的 Lexical Environment 指向的对象是一个 Environment Record，它有一个属性 `[[outerEnv]]` 指向外层的环境（对于 Global Environment Record 它是 null）
 
-> Every Environment Record has an [[OuterEnv]] field, which is either null or a reference to an outer Environment Record. This is used to model the logical nesting of Environment Record values. The outer reference of an (inner) Environment Record is a reference to the Environment Record that logically surrounds the inner Environment Record. 
+> Every Environment Record has an [[OuterEnv]] field, which is either null or a reference to an outer Environment Record. This is used to model the logical nesting of Environment Record values. The outer reference of an (inner) Environment Record is a reference to the Environment Record that logically surrounds the inner Environment Record.
 >
 > Environment Records are purely specification mechanisms and need not correspond to any specific artefact of an ECMAScript implementation.
 
-- 
+-

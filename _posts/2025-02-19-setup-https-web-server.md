@@ -1,17 +1,15 @@
 ---
 layout: post
 title: 搭建支持 HTTPS 的网站
-category: DIY
+category: tutorial
 ---
 
 在运行 Ubuntu 的云主机上搭建一个网站并完成 HTTPS 签名
 
 ### 准备工作
 
-- 一台拥有公网 IP 的云主机。（这里以 Amazon EC2 为例）
-- 一个域名（配置解析到上面的公网 IP）
-
-
+-   一台拥有公网 IP 的云主机。（这里以 Amazon EC2 为例）
+-   一个域名（配置解析到上面的公网 IP）
 
 ## 正式开始
 
@@ -21,9 +19,9 @@ category: DIY
 
 ### 获取证书
 
-[LetsEncrypt](https://letsencrypt.org/) 提供免费的 SSL 证书，它借助 ACME 协议完成域名签名。支持 ACME 的客户端有很多，这里以 
+[LetsEncrypt](https://letsencrypt.org/) 提供免费的 SSL 证书，它借助 ACME 协议完成域名签名。支持 ACME 的客户端有很多，这里以
 
- [`acme.sh`](https://github.com/acmesh-official/acme.sh) 为例。
+[`acme.sh`](https://github.com/acmesh-official/acme.sh) 为例。
 
 确保 apache 服务器正常运行，执行以下命令在 staging 环境中测试配置的正确性：
 
@@ -44,17 +42,13 @@ sudo acme.sh --issue --server letsencrypt -d vector341.com -w /var/www/html --ke
 
 Let's Encrypt 使用 ACME 协议来证明一个服务器确实拥有这个域名，上述的创建资源是一种证明方法，详细的交互步骤见：https://letsencrypt.org/how-it-works/
 
-
-
 ### 安装证书
 
-将证书、私钥和证书链安装到指定位置，在 Ubuntu 中通常是 `/etc/ssl/certs` 
+将证书、私钥和证书链安装到指定位置，在 Ubuntu 中通常是 `/etc/ssl/certs`
 
 ```sh
 acme.sh --installcert -d vector341.com --cert-file /etc/ssl/certs/letsencrypt-cert.crt --key-file /etc/ssl/private/letsencrypt-cert.key --fullchain-file /etc/apache2/ssl.crt/letsencrypt-fullchain.crt --ecc
 ```
-
-
 
 ### 配置 https 服务器
 
@@ -87,8 +81,6 @@ sudo a2ensite default-ssl.conf
 sudo systemctl restart apache2
 ```
 
-
-
 > 其实这里也提示了可以用 ssl-cert 生成自签名的证书：
 >
 > ```sh
@@ -98,20 +90,14 @@ sudo systemctl restart apache2
 > 生成的私钥位于：`/etc/ssl/private/ssl-cert-snakeoil.key`
 > 生成的证书：`/etc/ssl/certs/ssl-cert-snakeoil.pem`
 
-
-
-
-
 ## SSL 签名与加密的原理
 
 在密码学中，签名与加密是一对互逆的过程：
 
-- 签名：使用私钥与原始数据运算得到签名，使用公钥验证数据完整性（integrity）
-- 加密：使用公钥与原始数据运算得到密文，使用密钥确保数据私密性（encryption）
+-   签名：使用私钥与原始数据运算得到签名，使用公钥验证数据完整性（integrity）
+-   加密：使用公钥与原始数据运算得到密文，使用密钥确保数据私密性（encryption）
 
 其中原始数据一般是文件的哈希值，签名时公钥常被包含在原始文件中一起签名。
-
-
 
 ### 详细过程
 
@@ -155,7 +141,7 @@ openssl dgst -sha256 -sign private_key.pem -out signature.bin data.txt
 
 参数说明：
 
-- `-sha256`：指定哈希函数，一般签名是针对文件的哈希值
+-   `-sha256`：指定哈希函数，一般签名是针对文件的哈希值
 
 signature.bin 即是文件 data.txt 的签名
 
@@ -170,15 +156,20 @@ openssl dgst -sha256 -verify public_key.pem -signature signature.bin data.txt
 我们也可以参考验证的步骤手动完成上述步骤，更好地理解如何验证签名。
 
 1. 使用相同的哈希算法（SHA-256）对原始数据文件 (`data.txt`) 进行哈希计算。
+
 ```
 $ sha256sum data.txt
 21dae1f57aab6196019a38338f4270afa4060461725c852a07fccf735f80c28d  data.txt
 ```
+
 2. 使用**公钥**解密 `signature.bin` 以获取原始哈希值。
+
 ```
 $ openssl rsautl -verify -inkey public_key.pem -pubin -in signature.bin -out decrypted.bin
 ```
+
 3. 如果**两个哈希值匹配**，则数据被验证为真实且未被篡改。
+
 ```
 $ tail -c 32 decrypted.bin > extracted_hash.bin
 $ hexdump -C extracted_hash.bin
@@ -188,9 +179,6 @@ $ hexdump -C extracted_hash.bin
 ```
 
 RSA 签名使用的哈希结果为 32 字节，`tail -c 32` 用于去除解密数据中的 **ASN.1 Header**，提取最后 32 字节的哈希值
-
-
-
 
 ## 参考
 

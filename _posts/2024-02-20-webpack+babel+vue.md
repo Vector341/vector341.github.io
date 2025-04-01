@@ -3,111 +3,6 @@ title: webpack 打包体积优化
 category: webapck
 ---
 
-# babel
-
-## 如何看懂 babel 实际生效的配置
-
-#### Plugin Ordering https://babeljs.io/docs/plugins#plugin-ordering
-
-> Ordering matters for each visitor in the plugin.
-
-This means if two transforms both visit the "Program" node, the transforms will run in either plugin or preset order.
-
--   Plugins run before Presets.
--   Plugin ordering is first to last.
--   Preset ordering is reversed (last to first).
-
-#### Print effective configs
-
-You can tell Babel to print effective configs on a given input path
-
--   powershell
-
-```powershell
-$env:BABEL_SHOW_CONFIG_FOR = ".src/myComponent.jsx"; npm start
-```
-
-`BABEL_SHOW_CONFIG_FOR` accepts both absolute and relative _file_ paths. If it is a relative path, it will be resolved from [`cwd`](https://babeljs.io/docs/options#cwd).
-
-例如当前项目生效的配置
-
-```json
-@babel/preset-env: `DEBUG` option
-
-Using targets:
-{
-  "edge": "122"
-}
-
-Using modules transform: false
-
-Using plugins:
-  syntax-numeric-separator { "edge":"122" }
-  syntax-nullish-coalescing-operator { "edge":"122" }
-  proposal-optional-chaining { "edge":"122" }
-  syntax-json-strings { "edge":"122" }
-  syntax-optional-catch-binding { "edge":"122" }
-  syntax-async-generators { "edge":"122" }
-  syntax-object-rest-spread { "edge":"122" }
-  syntax-dynamic-import { "edge":"122" }
-  syntax-export-namespace-from { "edge":"122" }
-  syntax-top-level-await { "edge":"122" }
-
-Using polyfills: No polyfills were added, since the `useBuiltIns` option was not set.
-Babel configs on "D:\需求\cpe3000切换vue\smbui\src\core\Router.js" (ascending priority):
-config D:\需求\cpe3000切换vue\smbui\.babelrc
-{
-  "presets": [
-    "@babel/env",
-    "stage-2",
-    "@babel/react"
-  ],
-  "plugins": [
-    "syntax-dynamic-import",
-    "transform-vue-jsx"
-  ]
-}
-
-programmatic options from babel-loader
-{
-  "presets": [
-    [
-      "@babel/preset-env",
-      {
-        "modules": false,
-        "debug": true,
-        "targets": {
-          "edge": 122
-        }
-      }
-    ]
-  ],
-  "plugins": [
-    "@babel/plugin-transform-runtime"
-  ],
-  "filename": "D:\\需求\\cpe3000切换vue\\smbui\\src\\core\\Router.js",
-  "sourceMaps": false,
-  "sourceFileName": "D:\\需求\\cpe3000切换vue\\smbui\\src\\core\\Router.js",
-  "caller": {
-    "name": "babel-loader",
-    "target": "web",
-    "supportsStaticESM": true,
-    "supportsDynamicImport": true,
-    "supportsTopLevelAwait": true
-  }
-}
-```
-
-#### config merge
-
-当在多个地方配置 babel 后，最终生效的配置是通过 merge 形成。
-https://babeljs.io/docs/configuration#how-babel-merges-config-items
-
-#### name normalization
-
-当引入 plugin 时，可以通过多种方式指定插件名称。实际插件的解析方式见：
-https://babeljs.io/docs/options#name-normalization
-
 # webpack
 
 ## 源码/原理
@@ -196,7 +91,7 @@ https://webpack.docschina.org/guides/production/
 ### Tree shakeing
 
 webpack5 支持更深层的包分析 https://webpack.js.org/blog/2020-10-10-webpack-5-release/#major-changes-optimization
-开启 sideEffect 可以更好地分析依赖关系
+开启 **sideEffect** 可以更好地分析依赖关系
 
 [Webpack 中的 sideEffects 到底该怎么用？ - 前端-专注 javascript - SegmentFault 思否](https://segmentfault.com/a/1190000015689240)
 [你的 Tree-Shaking 并没什么卵用 - 知乎](https://zhuanlan.zhihu.com/p/32831172)
@@ -234,6 +129,7 @@ optimization: {
         }),
         new CssMinimizerPlugin()
     ],
+}
 ```
 
 ## 优化结果
@@ -359,3 +255,108 @@ du -b
     }
 },
 ```
+
+# babel
+
+## 如何看懂 babel 实际生效的配置
+
+#### Plugin Ordering https://babeljs.io/docs/plugins#plugin-ordering
+
+> Ordering matters for each visitor in the plugin.
+
+This means if two transforms both visit the "Program" node, the transforms will run in either plugin or preset order.
+
+-   Plugins run before Presets.
+-   Plugin ordering is first to last.
+-   Preset ordering is reversed (last to first).
+
+#### Print effective configs
+
+You can tell Babel to print effective configs on a given input path
+
+-   powershell
+
+```powershell
+$env:BABEL_SHOW_CONFIG_FOR = ".src/myComponent.jsx"; npm start
+```
+
+`BABEL_SHOW_CONFIG_FOR` accepts both absolute and relative _file_ paths. If it is a relative path, it will be resolved from [`cwd`](https://babeljs.io/docs/options#cwd).
+
+例如当前项目生效的配置
+
+```json
+@babel/preset-env: `DEBUG` option
+
+Using targets:
+{
+  "edge": "122"
+}
+
+Using modules transform: false
+
+Using plugins:
+  syntax-numeric-separator { "edge":"122" }
+  syntax-nullish-coalescing-operator { "edge":"122" }
+  proposal-optional-chaining { "edge":"122" }
+  syntax-json-strings { "edge":"122" }
+  syntax-optional-catch-binding { "edge":"122" }
+  syntax-async-generators { "edge":"122" }
+  syntax-object-rest-spread { "edge":"122" }
+  syntax-dynamic-import { "edge":"122" }
+  syntax-export-namespace-from { "edge":"122" }
+  syntax-top-level-await { "edge":"122" }
+
+Using polyfills: No polyfills were added, since the `useBuiltIns` option was not set.
+Babel configs on "D:\需求\cpe3000切换vue\smbui\src\core\Router.js" (ascending priority):
+config D:\需求\cpe3000切换vue\smbui\.babelrc
+{
+  "presets": [
+    "@babel/env",
+    "stage-2",
+    "@babel/react"
+  ],
+  "plugins": [
+    "syntax-dynamic-import",
+    "transform-vue-jsx"
+  ]
+}
+
+programmatic options from babel-loader
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "modules": false,
+        "debug": true,
+        "targets": {
+          "edge": 122
+        }
+      }
+    ]
+  ],
+  "plugins": [
+    "@babel/plugin-transform-runtime"
+  ],
+  "filename": "D:\\需求\\cpe3000切换vue\\smbui\\src\\core\\Router.js",
+  "sourceMaps": false,
+  "sourceFileName": "D:\\需求\\cpe3000切换vue\\smbui\\src\\core\\Router.js",
+  "caller": {
+    "name": "babel-loader",
+    "target": "web",
+    "supportsStaticESM": true,
+    "supportsDynamicImport": true,
+    "supportsTopLevelAwait": true
+  }
+}
+```
+
+#### config merge
+
+当在多个地方配置 babel 后，最终生效的配置是通过 merge 形成。
+https://babeljs.io/docs/configuration#how-babel-merges-config-items
+
+#### name normalization
+
+当引入 plugin 时，可以通过多种方式指定插件名称。实际插件的解析方式见：
+https://babeljs.io/docs/options#name-normalization

@@ -1,17 +1,16 @@
 ---
 title: Gerrit 文档学习与推送简写
 date: 2023-11-6
-categories: git gerrit
+category: git
 ---
+
 # Gerrit 文档
 
-本帖记录学习 [Gerrit](http://review.tp-link.net/gerrit/Documentation/index.html) 官方文档的记录
+本帖记录学习 [Gerrit](https://gerrit-documentation.storage.googleapis.com/Documentation/3.11.2/index.html) 官方文档的记录
 
 ### 与 Github 的差异
 
-[Basic Gerrit Walkthrough — For GitHub Users]((http://review.tp-link.net/gerrit/Documentation/intro-gerrit-walkthrough-github.html)) 这篇文章中介绍了 Gerrit 与 Github 在评审流程上的差异。最核心的差异是：一个特性的 Review/迭代在单个提交而不是一条分支上；使用 `git push origin HEAD:refs/for/master` 开始评审代码而不是 pull request.
-
-
+[Basic Gerrit Walkthrough — For GitHub Users](<(http://review.tp-link.net/gerrit/Documentation/intro-gerrit-walkthrough-github.html)>) 这篇文章中介绍了 Gerrit 与 Github 在评审流程上的差异。最核心的差异是：一个特性的 Review/迭代在单个提交而不是一条分支上；使用 `git push origin HEAD:refs/for/master` 开始评审代码而不是 pull request.
 
 ## Concepts
 
@@ -33,11 +32,11 @@ refs/changes/[CD]/[ABCD]/[EF]
 
 Where:
 
-- [CD] is the last two digits of the **change number**
-- [ABCD] is the **change number**
-- [EF] is the patch set number
+-   [CD] is the last two digits of the **change number**
+-   [ABCD] is the **change number**
+-   [EF] is the patch set number
 
-上面的 change number 是 URL 中结尾的一串数字，即 http://review.tp-link.net/gerrit/c/pon/sdk/econet/turnkey_sdk/apps/private/webPage/+/1248263 中的 *1248263*
+上面的 change number 是 URL 中结尾的一串数字，即 http://review.tp-link.net/gerrit/c/pon/sdk/econet/turnkey_sdk/apps/private/webPage/+/1248263 中的 _1248263_
 
 当点击 “Download Patch” 时下载时，可以看见
 
@@ -47,13 +46,7 @@ git fetch ssh://zhuyifei@review.tp-link.net:29418/pon/sdk/econet/turnkey_sdk/app
 
 其中的 `refs/changes/63/1248263/9` 代表这是 1248263 提交的第 9 个 patch
 
-
-
-
-
-
-
-# Gerrit推送评审的快捷命令
+# Gerrit 推送评审的快捷命令
 
 项目开发中使用 Gerrit 托管 git 服务。在 Gerrit 的规则下，个人是无法直接向远端分支推送提交的，所有的提交都要先推送到前缀为 `refs/for` 的分支，这表示当前代码正在评审，评审通过后才会被正式入库进入远端分支。因此，推送评审时的命令与直接推送的命令相比会繁琐很多：
 
@@ -70,8 +63,6 @@ git push origin HEAD:refs/for/master
 ```sh
 git push origin HEAD:refs/for/projectname/sandbox/zhangsan/develop
 ```
-
-
 
 ## 解决方法
 
@@ -109,8 +100,6 @@ git push origin HEAD:refs/for/projectname/sandbox/zhangsan/develop
 
 与例子中唯一的不同就是省略了 `refs/heads`，git 会缺省地在 heads 的分支中寻找分支名。
 
-
-
 ### 方案二： 使用 alias 缩写
 
 上面的方法虽然直接，但还是存在一定的局限性。显然，分支名称被硬编码到 config 中，切换分支后还需要重新配置。此外，该配置的作用域是单个项目，新建项目也需要重新配置。
@@ -145,23 +134,23 @@ git re sandbox/develop
 
 其中 `$()` 的作用是将括号内语句的执行结果作为字符串再次执行。关于括号的解释如下：
 
->[bash - What does $(command) & do? - Ask Ubuntu](https://askubuntu.com/questions/833833/what-does-command-do#:~:text=The dollar sign before the thing in parenthesis,getting the value of that variable for something.)
+> [bash - What does $(command) & do? - Ask Ubuntu](https://askubuntu.com/questions/833833/what-does-command-do#:~:text=The dollar sign before the thing in parenthesis,getting the value of that variable for something.)
 >
->## Parenthesis `()` - Command substitution
+> ## Parenthesis `()` - Command substitution
 >
->Command substitution allows the output of a command to replace the command itself. Command substitution occurs when a command is enclosed as follows:
+> Command substitution allows the output of a command to replace the command itself. Command substitution occurs when a command is enclosed as follows:
 >
->```
->$(command)
->```
+> ```
+> $(command)
+> ```
 >
->or
+> or
 >
->```
->`command`
->```
+> ```
+> `command`
+> ```
 >
->Bash performs the expansion by executing the command in a subshell environment and replacing the command substitution with the standard output of the command, with any trailing newlines deleted. Embedded newlines are not deleted, but they may be removed during word splitting. The command substitution `$(cat file)` can be replaced by the equivalent but faster `$(< file)`.
+> Bash performs the expansion by executing the command in a subshell environment and replacing the command substitution with the standard output of the command, with any trailing newlines deleted. Embedded newlines are not deleted, but they may be removed during word splitting. The command substitution `$(cat file)` can be replaced by the equivalent but faster `$(< file)`.
 
 使用新的缩写可以省略掉分支名直接调用
 
@@ -169,18 +158,16 @@ git re sandbox/develop
 git re
 ```
 
-
-
 ### 方法三 第三方工具
 
 Gerrit 作为一个成熟的托管服务，自然有很多工具适配它的工作流程，其中比较常用的有
 
-- [git-review — git-review documentation (opendev.org)](https://docs.opendev.org/opendev/git-review/latest/index.html) —— Gerrit评审工具
-- [Gerrit- Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=SanderRonde.vscode--gerrit) —— VSCode 的 Gerit 插件
+-   [git-review — git-review documentation (opendev.org)](https://docs.opendev.org/opendev/git-review/latest/index.html) —— Gerrit 评审工具
+-   [Gerrit- Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=SanderRonde.vscode--gerrit) —— VSCode 的 Gerit 插件
 
 下面简要说明 git-review 的配置方法
 
-使用 git-review 前需要在项目根目录下建立 `.gitreview` 文件说明 Gerrit服务器的位置和工作的项目、分支。一个典型的配置文件如下：
+使用 git-review 前需要在项目根目录下建立 `.gitreview` 文件说明 Gerrit 服务器的位置和工作的项目、分支。一个典型的配置文件如下：
 
 ```ini
 [gerrit]
