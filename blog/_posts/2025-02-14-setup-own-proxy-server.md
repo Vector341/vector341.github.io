@@ -48,8 +48,6 @@ installed: /etc/systemd/system/v2ray.service
 installed: /etc/systemd/system/v2ray@.service
 ```
 
-
-
 ### 配置
 
 默认配置文件位置：`/usr/local/etc/v2ray/config.json` 客户端和服务器均相同
@@ -58,105 +56,101 @@ installed: /etc/systemd/system/v2ray@.service
 
 ```json
 {
-  "log": {
-    "access": "/var/log/v2ray/access.log",
-    "error": "/var/log/v2ray/error.log",
-    "loglevel": "debug"
-  },
-  "inbounds": [
-    {
-      "port": 10086,
-      "protocol": "vmess",
-      "settings": {
-        "clients": [
-          {
-            "id": "uuid"	// 使用 v2ray uuid 生成的随机 uuid
-          }
-        ]
-      }
-    }
-  ],
-  "outbounds": [
-    {
-      "protocol": "freedom",
-      "settings": {}
-    }
-  ]
+    "log": {
+        "access": "/var/log/v2ray/access.log",
+        "error": "/var/log/v2ray/error.log",
+        "loglevel": "debug"
+    },
+    "inbounds": [
+        {
+            "port": 10086,
+            "protocol": "vmess",
+            "settings": {
+                "clients": [
+                    {
+                        "id": "uuid" // 使用 v2ray uuid 生成的随机 uuid
+                    }
+                ]
+            }
+        }
+    ],
+    "outbounds": [
+        {
+            "protocol": "freedom",
+            "settings": {}
+        }
+    ]
 }
 ```
 
-服务器需要打开上述端口10086，以 Amazon EC2 为例，需要在 security group 中新建一条 Inbound 规则
+服务器需要打开上述端口 10086，以 Amazon EC2 为例，需要在 security group 中新建一条 Inbound 规则
 
 **客户端配置**
 
 ```json
 {
-  "log": {
-    "access": "/var/log/v2ray/access.log",
-    "error": "/var/log/v2ray/error.log",
-    "loglevel": "debug"
-  },
-  "inbounds": [
-    {
-      "port": 1080, // SOCKS 代理端口，在浏览器中需配置代理并指向这个端口
-      "listen": "127.0.0.1",
-      "protocol": "socks",
-      "settings": {
-        "udp": true
-      }
+    "log": {
+        "access": "/var/log/v2ray/access.log",
+        "error": "/var/log/v2ray/error.log",
+        "loglevel": "debug"
     },
-    {
-      "port": 1080, // SOCKS 代理端口，在浏览器中需配置代理并指向这个端口
-      "listen": "127.0.0.1",
-      "protocol": "http",
-      "settings": {
-        "timeout": 30
-      }
-    }
-  ],
-  "outbounds": [
-    {
-      "protocol": "vmess",
-      "settings": {
-        "vnext": [
-          {
-            "address": "x.x.x.x", // 服务器地址
-            "port": 10086,
-            "users": [
-              {
-                "id": "uuid"  // 使用 v2ray uuid 生成的随机 uuid
-              }
-            ]
-          }
+    "inbounds": [
+        {
+            "port": 1080, // SOCKS 代理端口，在浏览器中需配置代理并指向这个端口
+            "listen": "127.0.0.1",
+            "protocol": "socks",
+            "settings": {
+                "udp": true
+            }
+        },
+        {
+            "port": 1080, // SOCKS 代理端口，在浏览器中需配置代理并指向这个端口
+            "listen": "127.0.0.1",
+            "protocol": "http",
+            "settings": {
+                "timeout": 30
+            }
+        }
+    ],
+    "outbounds": [
+        {
+            "protocol": "vmess",
+            "settings": {
+                "vnext": [
+                    {
+                        "address": "x.x.x.x", // 服务器地址
+                        "port": 10086,
+                        "users": [
+                            {
+                                "id": "uuid" // 使用 v2ray uuid 生成的随机 uuid
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "protocol": "freedom",
+            "tag": "direct",
+            "settings": {}
+        }
+    ],
+    "routing": {
+        "domainStrategy": "IPOnDemand",
+        "rules": [
+            {
+                "type": "field",
+                "ip": ["geoip:private"],
+                "outboundTag": "direct"
+            }
         ]
-      }
-    },
-    {
-      "protocol": "freedom",
-      "tag": "direct",
-      "settings": {}
     }
-  ],
-  "routing": {
-    "domainStrategy": "IPOnDemand",
-    "rules": [
-      {
-        "type": "field",
-        "ip": [
-          "geoip:private"
-        ],
-        "outboundTag": "direct"
-      }
-    ]
-  }
 }
 ```
 
-需要注意的是在没有加 TLS 的情况，地址部分必须填写节点服务器IP地址
+需要注意的是在没有加 TLS 的情况，地址部分必须填写节点服务器 IP 地址
 
-*注：以上配置是个人参考官方配置修改而来的最简单的可用配置，同时输出了详细的日志。更多配置可参考：https://github.com/v2fly/v2ray-examples*
-
-
+_注：以上配置是个人参考官方配置修改而来的最简单的可用配置，同时输出了详细的日志。更多配置可参考：https://github.com/v2fly/v2ray-examples_
 
 ## 参考文档
 
@@ -164,6 +158,3 @@ installed: /etc/systemd/system/v2ray@.service
 2. v2ray 下载脚本：https://github.com/v2fly/fhs-install-v2ray
 3. v2ray 示例配置：https://github.com/v2fly/v2ray-examples
 4. [VMess + Vultr 自建梯子新手指南 Clash V2ray VMess 配置保姆级教程 – 胖橙博客](https://jiasupanda.com/vmess-vultr)
-
-
-
