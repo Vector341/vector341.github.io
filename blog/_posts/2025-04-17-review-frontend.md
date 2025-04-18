@@ -59,7 +59,7 @@ TODO:
 - **函数**
 - **class** 原型，原型链，继承
 - **作用域** 作用链，自由变量，闭包
-- **异步** Promise Async/await 微任务/宏任务 EventLoop
+- **异步** Promise Async/await 微任务/宏任务 https://geekdaxue.co/read/nardo@goi5e0/0ac0b3c8-0b08-43b5-9a04-c0a916d64fef EventLoop
 - **Map 和 Set**
 - **Proxy 和 Reflect**
 - **Generator** `*` yield
