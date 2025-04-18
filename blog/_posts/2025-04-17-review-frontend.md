@@ -3,6 +3,10 @@ title: 前端知识体系梳理
 categories: [learn]
 ---
 
+TODO:
+前端工程师手册：https://leohxj.gitbooks.io/front-end-database/content/javascript-modules/about-umd.html
+技术修行：https://geekdaxue.co/read/nardo@goi5e0/adba9a9b-5ce3-4d95-8d0a-57ef7d24d465
+
 ## 前端基础
 
 ### HTML
@@ -203,8 +207,6 @@ https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Perfor
 - **Selvte** 无 vdom，编译时框架，轻量高效
 - **Solid** 无 vdom，响应式编程，高效渲染
 
-
-
 ## 计算机基础
 
 本科或考研计算机专业的专业课。其中数据结构和算法下文单独写。
@@ -289,12 +291,10 @@ https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Perfor
 
 - ASCII 编码
 
-   
+    是一种字符编码标准，用于表示英文字符、数字、标点符号以及一些控制字符。它使用7位二进制数（即0到127之间的整数）来表示各种字符，其中每个字符对应一个唯一的数字编码。例如
 
-  是一种字符编码标准，用于表示英文字符、数字、标点符号以及一些控制字符。它使用7位二进制数（即0到127之间的整数）来表示各种字符，其中每个字符对应一个唯一的数字编码。例如
-
-  - 字符 `A` 对应的ASCII编码是 `65`（二进制表示为 `01000001`）
-  - 字符 `a` 是 `97`（二进制 `01100001`）
+    - 字符 `A` 对应的ASCII编码是 `65`（二进制表示为 `01000001`）
+    - 字符 `a` 是 `97`（二进制 `01100001`）
 
 - **Unicode 编码** 是一个字符编码标准，用于统一表示世界上几乎所有的文字和符号。它为每个字符分配一个唯一的数字标识（称为**码点**），并支持多种语言、符号以及其他字符集，包括汉字、拉丁字母、数学符号、表情符号等。Unicode 包含了超过137,000个字符，覆盖了几乎所有的书写系统。Unicode 的设计目的是让全球的字符集标准统一，从而解决多种字符编码的兼容性问题。
 
@@ -342,8 +342,6 @@ https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Perfor
 - `O(logn)` 分治
 - `O(n*logn)` 一层循环 + 分治
 - `O(n^2)` 两层嵌套循环
-
-
 
 ## 编程模式
 
