@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>项目复盘 | vector 的博客</title>
+    <meta name="generator" content="VuePress 1.9.10">
+    
+    <meta name="description" content="
+
+思路：指标，方案/优化手段，性能实践
+
+requirejs -&gt; esmodule
+splitChunk
+Terser plugin 配置, miniCss plugin
+polyfill 优化，browserlist
+IgnorePlugin
+url-loader, asset module
+
+延申
+
+webpack 构建流程，hooks
+2 ...">
+    
+    <link rel="preload" href="/assets/css/0.styles.d98ac11d.css" as="style"><link rel="preload" href="/assets/js/app.39946fff.js" as="script"><link rel="preload" href="/assets/js/4.78102bb1.js" as="script"><link rel="preload" href="/assets/js/1.fd3ac483.js" as="script"><link rel="preload" href="/assets/js/38.e7583554.js" as="script"><link rel="prefetch" href="/assets/js/11.97d6be34.js"><link rel="prefetch" href="/assets/js/12.b75cedfd.js"><link rel="prefetch" href="/assets/js/13.6222e2d7.js"><link rel="prefetch" href="/assets/js/14.691887ed.js"><link rel="prefetch" href="/assets/js/15.c8380fc6.js"><link rel="prefetch" href="/assets/js/16.f61af186.js"><link rel="prefetch" href="/assets/js/17.0da44ed2.js"><link rel="prefetch" href="/assets/js/18.884f7310.js"><link rel="prefetch" href="/assets/js/19.98fef327.js"><link rel="prefetch" href="/assets/js/2.b4a672c3.js"><link rel="prefetch" href="/assets/js/20.5da2a9fd.js"><link rel="prefetch" href="/assets/js/21.6c352812.js"><link rel="prefetch" href="/assets/js/22.aaefa9dd.js"><link rel="prefetch" href="/assets/js/23.60eccd3d.js"><link rel="prefetch" href="/assets/js/24.1a8b8758.js"><link rel="prefetch" href="/assets/js/25.23f2358d.js"><link rel="prefetch" href="/assets/js/26.56fad5b4.js"><link rel="prefetch" href="/assets/js/27.a41c6cf9.js"><link rel="prefetch" href="/assets/js/28.abe13d1e.js"><link rel="prefetch" href="/assets/js/29.5c174131.js"><link rel="prefetch" href="/assets/js/3.90c1e1dd.js"><link rel="prefetch" href="/assets/js/30.6e2e3ac0.js"><link rel="prefetch" href="/assets/js/31.f4a321ed.js"><link rel="prefetch" href="/assets/js/32.3a9e14a1.js"><link rel="prefetch" href="/assets/js/33.46c92534.js"><link rel="prefetch" href="/assets/js/34.eba9f689.js"><link rel="prefetch" href="/assets/js/35.684e609f.js"><link rel="prefetch" href="/assets/js/36.85d0b852.js"><link rel="prefetch" href="/assets/js/37.03579ca5.js"><link rel="prefetch" href="/assets/js/39.85b09117.js"><link rel="prefetch" href="/assets/js/5.f278a237.js"><link rel="prefetch" href="/assets/js/6.fdbae97e.js"><link rel="prefetch" href="/assets/js/7.27eb5c24.js"><link rel="prefetch" href="/assets/js/8.b8f82a2c.js"><link rel="prefetch" href="/assets/js/vuejs-paginate.a73f878b.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d98ac11d.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div id="vuepress-theme-blog__global-layout"><section id="header-wrapper"><header id="header"><div class="header-wrapper"><div class="title"><a href="/" class="nav-link home-link">vector 的博客 </a></div> <div class="header-right-wrap"><!----> <div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <!----></div></div></header></section> <div id="mobile-header"><div class="mobile-header-bar"><div class="mobile-header-title"><a href="/" class="nav-link mobile-home-link">vector 的博客 </a> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></div> <div class="mobile-menu-wrapper"><hr class="menu-divider"> <!----></div></div></div> <div class="content-wrapper"><div id="vuepress-theme-blog__post-layout"><article itemscope="itemscope" itemtype="https://schema.org/BlogPosting" class="vuepress-blog-theme-content"><header><h1 itemprop="name headline" class="post-title">
+        项目复盘
+      </h1> <div class="post-meta"><!----> <!----> <!----></div></header> <div itemprop="articleBody" class="content__default"><h2 id="webpack-打包体积优化"><a href="#webpack-打包体积优化" class="header-anchor">#</a> webpack 打包体积优化</h2> <p>思路：指标，方案/优化手段，性能实践</p> <ol><li>requirejs -&gt; esmodule</li> <li>splitChunk</li> <li>Terser plugin 配置, miniCss plugin</li> <li>polyfill 优化，browserlist</li> <li>IgnorePlugin</li> <li>url-loader, asset module</li></ol> <h3 id="延申"><a href="#延申" class="header-anchor">#</a> 延申</h3> <ol><li>webpack 构建流程，hooks</li> <li>tapable</li> <li>esmodule 与 commonjs 差异</li></ol> <h2 id="天翼云盘接入"><a href="#天翼云盘接入" class="header-anchor">#</a> 天翼云盘接入</h2> <p>access_token 获取
+跨域状态共享(业务的登录状态带入鉴权服务器)</p> <h3 id="业务场景"><a href="#业务场景" class="header-anchor">#</a> 业务场景</h3> <p>有两部分，一是登录换取 access_token，二是跨域同步登录信息</p> <ol><li>页面嵌入 iframe，url = unifyAccountLogin.do?appId=id&amp;returnURL=http://our.com&amp;state=xxx</li> <li>登录后 access_token 返回到后台</li> <li>后续通过 access_token 单点登录完成会员订购功能</li></ol> <h3 id="延申-2"><a href="#延申-2" class="header-anchor">#</a> 延申</h3> <p>OAuth2 授权码模式的流程
+OAuth2 的其他授权模式：Authorization Code，Client Credentials, Device Code,(不推荐Implicit Flow, Password Grant) https://www.digitalocean.com/community/tutorials/an-introduction-to-oauth-2#grant-type-client-credentials</p></div> <footer><!----> <hr> <!----></footer></article> <div class="sticker vuepress-toc"><div class="vuepress-toc-item vuepress-toc-h2 active"><a href="#webpack-打包体积优化" title="webpack 打包体积优化">webpack 打包体积优化</a></div><div class="vuepress-toc-item vuepress-toc-h3"><a href="#延申" title="延申">延申</a></div><div class="vuepress-toc-item vuepress-toc-h2"><a href="#天翼云盘接入" title="天翼云盘接入">天翼云盘接入</a></div><div class="vuepress-toc-item vuepress-toc-h3"><a href="#业务场景" title="业务场景">业务场景</a></div><div class="vuepress-toc-item vuepress-toc-h3"><a href="#延申-2" title="延申">延申</a></div></div></div></div> <footer class="footer" data-v-3d9deeb8><div class="footer-left-wrap" data-v-3d9deeb8><ul class="contact" data-v-3d9deeb8></ul></div> <div class="footer-right-wrap" data-v-3d9deeb8><ul class="copyright" data-v-3d9deeb8></ul></div></footer></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.39946fff.js" defer></script><script src="/assets/js/4.78102bb1.js" defer></script><script src="/assets/js/1.fd3ac483.js" defer></script><script src="/assets/js/38.e7583554.js" defer></script>
+  </body>
+</html>

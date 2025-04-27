@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Vue Router 中 path 的解析 | vector 的博客</title>
+    <meta name="generator" content="VuePress 1.9.10">
+    
+    <meta name="description" content="参考：
+&gt;
+&gt; vue-router 内部跳转逻辑
+&gt;
+&gt; vue-router 中 push 方法 name 和 path 路由跳转的区别（从源码的角度讲）附带性能测试\_router.push name-CSDN 博客
+
+调用 `router.push(&quot;path&quot; ...">
+    
+    <link rel="preload" href="/assets/css/0.styles.d98ac11d.css" as="style"><link rel="preload" href="/assets/js/app.39946fff.js" as="script"><link rel="preload" href="/assets/js/4.78102bb1.js" as="script"><link rel="preload" href="/assets/js/1.fd3ac483.js" as="script"><link rel="preload" href="/assets/js/19.98fef327.js" as="script"><link rel="prefetch" href="/assets/js/11.97d6be34.js"><link rel="prefetch" href="/assets/js/12.b75cedfd.js"><link rel="prefetch" href="/assets/js/13.6222e2d7.js"><link rel="prefetch" href="/assets/js/14.691887ed.js"><link rel="prefetch" href="/assets/js/15.c8380fc6.js"><link rel="prefetch" href="/assets/js/16.f61af186.js"><link rel="prefetch" href="/assets/js/17.0da44ed2.js"><link rel="prefetch" href="/assets/js/18.884f7310.js"><link rel="prefetch" href="/assets/js/2.b4a672c3.js"><link rel="prefetch" href="/assets/js/20.5da2a9fd.js"><link rel="prefetch" href="/assets/js/21.6c352812.js"><link rel="prefetch" href="/assets/js/22.aaefa9dd.js"><link rel="prefetch" href="/assets/js/23.60eccd3d.js"><link rel="prefetch" href="/assets/js/24.1a8b8758.js"><link rel="prefetch" href="/assets/js/25.23f2358d.js"><link rel="prefetch" href="/assets/js/26.56fad5b4.js"><link rel="prefetch" href="/assets/js/27.a41c6cf9.js"><link rel="prefetch" href="/assets/js/28.abe13d1e.js"><link rel="prefetch" href="/assets/js/29.5c174131.js"><link rel="prefetch" href="/assets/js/3.90c1e1dd.js"><link rel="prefetch" href="/assets/js/30.6e2e3ac0.js"><link rel="prefetch" href="/assets/js/31.f4a321ed.js"><link rel="prefetch" href="/assets/js/32.3a9e14a1.js"><link rel="prefetch" href="/assets/js/33.46c92534.js"><link rel="prefetch" href="/assets/js/34.eba9f689.js"><link rel="prefetch" href="/assets/js/35.684e609f.js"><link rel="prefetch" href="/assets/js/36.85d0b852.js"><link rel="prefetch" href="/assets/js/37.03579ca5.js"><link rel="prefetch" href="/assets/js/38.e7583554.js"><link rel="prefetch" href="/assets/js/39.85b09117.js"><link rel="prefetch" href="/assets/js/5.f278a237.js"><link rel="prefetch" href="/assets/js/6.fdbae97e.js"><link rel="prefetch" href="/assets/js/7.27eb5c24.js"><link rel="prefetch" href="/assets/js/8.b8f82a2c.js"><link rel="prefetch" href="/assets/js/vuejs-paginate.a73f878b.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d98ac11d.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div id="vuepress-theme-blog__global-layout"><section id="header-wrapper"><header id="header"><div class="header-wrapper"><div class="title"><a href="/" class="nav-link home-link">vector 的博客 </a></div> <div class="header-right-wrap"><!----> <div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <!----></div></div></header></section> <div id="mobile-header"><div class="mobile-header-bar"><div class="mobile-header-title"><a href="/" class="nav-link mobile-home-link">vector 的博客 </a> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></div> <div class="mobile-menu-wrapper"><hr class="menu-divider"> <!----></div></div></div> <div class="content-wrapper"><div id="vuepress-theme-blog__post-layout"><article itemscope="itemscope" itemtype="https://schema.org/BlogPosting" class="vuepress-blog-theme-content"><header><h1 itemprop="name headline" class="post-title">
+        Vue Router 中 path 的解析
+      </h1> <div class="post-meta"><!----> <div class="post-meta-date"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> <time pubdate itemprop="datePublished" datetime="2023-12-15T00:00:00.000Z">
+      Fri Dec 15 2023
+    </time></div> <!----></div></header> <div itemprop="articleBody" class="content__default"><blockquote><p>参考：</p> <p>vue-router 内部跳转逻辑</p> <p><a href="https://blog.csdn.net/qq_36356218/article/details/106833761" target="_blank" rel="noopener noreferrer">vue-router 中 push 方法 name 和 path 路由跳转的区别（从源码的角度讲）附带性能测试_router.push name-CSDN 博客<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p></blockquote> <p>调用 <code>router.push(&quot;path&quot;)</code>时，传入的参数有多种类型。按 vue-router 文档，可传入字符串、对象等：</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// literal string path</span>
+router<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token string">&quot;home&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// object</span>
+router<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token literal-property property">path</span><span class="token operator">:</span> <span class="token string">&quot;home&quot;</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// named route</span>
+router<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">&quot;user&quot;</span><span class="token punctuation">,</span> <span class="token literal-property property">params</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">userId</span><span class="token operator">:</span> <span class="token string">&quot;123&quot;</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// with query, resulting in /register?plan=private</span>
+router<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token literal-property property">path</span><span class="token operator">:</span> <span class="token string">&quot;register&quot;</span><span class="token punctuation">,</span> <span class="token literal-property property">query</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">plan</span><span class="token operator">:</span> <span class="token string">&quot;private&quot;</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><p>当传入具名路由时，跳转的新路由可以由 name 明确地确定，但传入字符串或 path 时，跳转的目的 path 需要经过解析（normalize + resolve）。</p> <h2 id="数据类型"><a href="#数据类型" class="header-anchor">#</a> 数据类型</h2> <p>从源码中可知 push 的参数类型为 <code>RawLocation</code></p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token function">push</span> <span class="token punctuation">(</span>location<span class="token operator">:</span> RawLocation<span class="token punctuation">,</span> onComplete<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">Function</span><span class="token punctuation">,</span> onAbort<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">Function</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// $flow-disable-line</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>onComplete <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>onAbort <span class="token operator">&amp;&amp;</span> <span class="token keyword">typeof</span> <span class="token builtin">Promise</span> <span class="token operator">!==</span> <span class="token string">'undefined'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Promise</span></span><span class="token punctuation">(</span><span class="token punctuation">(</span>resolve<span class="token punctuation">,</span> reject<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>history<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>location<span class="token punctuation">,</span> resolve<span class="token punctuation">,</span> reject<span class="token punctuation">)</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>history<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>location<span class="token punctuation">,</span> onComplete<span class="token punctuation">,</span> onAbort<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>从类型定义中可以查到 RawLocatiion 可以为字符串或 Location，而 Location 只是一个 Plain Object，</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">RawLocation</span> <span class="token operator">=</span> <span class="token builtin">string</span> <span class="token operator">|</span> Location<span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">Location</span> <span class="token punctuation">{</span>
+    name<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+    path<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+    hash<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+    query<span class="token operator">?</span><span class="token operator">:</span> Dictionary<span class="token operator">&lt;</span><span class="token builtin">string</span> <span class="token operator">|</span> <span class="token punctuation">(</span><span class="token builtin">string</span> <span class="token operator">|</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">|</span> <span class="token keyword">null</span> <span class="token operator">|</span> <span class="token keyword">undefined</span><span class="token operator">&gt;</span><span class="token punctuation">;</span>
+    params<span class="token operator">?</span><span class="token operator">:</span> Dictionary<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token operator">&gt;</span><span class="token punctuation">;</span>
+    append<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    replace<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="字符串的内部处理"><a href="#字符串的内部处理" class="header-anchor">#</a> 字符串的内部处理</h2> <p>见参考 <a href="https://blog.csdn.net/qq_36356218/article/details/106833761" target="_blank" rel="noopener noreferrer">vue-router 中 push 方法 name 和 path 路由跳转的区别（从源码的角度讲）附带性能测试_router.push name-CSDN 博客<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> 中 push 的内部实现，调用 push 后以下三个函数依次调用：</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code>
+<span class="token function">transitionTo</span> <span class="token punctuation">(</span>
+    location<span class="token operator">:</span> RawLocation<span class="token punctuation">,</span>
+    onComplete<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">Function</span><span class="token punctuation">,</span>
+    onAbort<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">Function</span>
+<span class="token punctuation">)</span>
+
+
+<span class="token keyword">function</span> <span class="token function">match</span> <span class="token punctuation">(</span>
+    raw<span class="token punctuation">,</span>
+    currentRoute<span class="token punctuation">,</span>
+    redirectedFrom
+  <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   		 <span class="token keyword">var</span> location <span class="token operator">=</span> <span class="token function">normalizeLocation</span><span class="token punctuation">(</span>raw<span class="token punctuation">,</span> currentRoute<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> router<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		 <span class="token comment">// ...</span>
+    <span class="token punctuation">}</span>
+
+
+<span class="token keyword">function</span> <span class="token function">normalizeLocation</span> <span class="token punctuation">(</span>
+  raw<span class="token punctuation">,</span>
+  current<span class="token punctuation">,</span>
+  append<span class="token punctuation">,</span>
+  router
+<span class="token punctuation">)</span>
+</code></pre></div><p>​ 三个函数的第一个参数均是 <code>RawLocation</code>，在 <code>normalizeLocation</code> 中才正式处理。</p> <p>normalizeLocation 也被封装在 <a href="https://v3.router.vuejs.org/api/#router-resolve" target="_blank" rel="noopener noreferrer">router.resolve<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> 中，返回值中的 location 即调用 normalize 后的返回值</p> <h3 id="normalizelocation-源码"><a href="#normalizelocation-源码" class="header-anchor">#</a> <code>normalizeLocation</code> 源码</h3> <p>来看源码（已删减，仅保留与字符串处理相关逻辑）</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">function</span> <span class="token function">normalizeLocation</span><span class="token punctuation">(</span>raw<span class="token punctuation">,</span> current<span class="token punctuation">,</span> append<span class="token punctuation">,</span> router<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 1. 字符串包装为对象</span>
+    <span class="token keyword">var</span> next <span class="token operator">=</span> <span class="token keyword">typeof</span> raw <span class="token operator">===</span> <span class="token string">&quot;string&quot;</span> <span class="token operator">?</span> <span class="token punctuation">{</span> path<span class="token operator">:</span> raw <span class="token punctuation">}</span> <span class="token operator">:</span> raw<span class="token punctuation">;</span>
+
+    <span class="token comment">// named target</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>next<span class="token punctuation">.</span>_normalized<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> next<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>next<span class="token punctuation">.</span>name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// ...</span>
+        <span class="token keyword">return</span> next<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// relative params</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>next<span class="token punctuation">.</span>path <span class="token operator">&amp;&amp;</span> next<span class="token punctuation">.</span>params <span class="token operator">&amp;&amp;</span> current<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        next <span class="token operator">=</span> <span class="token function">extend</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> next<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        next<span class="token punctuation">.</span>_normalized <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token keyword">var</span> params$1 <span class="token operator">=</span> <span class="token function">extend</span><span class="token punctuation">(</span><span class="token function">extend</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> current<span class="token punctuation">.</span>params<span class="token punctuation">)</span><span class="token punctuation">,</span> next<span class="token punctuation">.</span>params<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// ...</span>
+        <span class="token keyword">return</span> next<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// 2. 处理字符串的核心逻辑</span>
+    <span class="token keyword">var</span> parsedPath <span class="token operator">=</span> <span class="token function">parsePath</span><span class="token punctuation">(</span>next<span class="token punctuation">.</span>path <span class="token operator">||</span> <span class="token string">&quot;&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">var</span> basePath <span class="token operator">=</span> <span class="token punctuation">(</span>current <span class="token operator">&amp;&amp;</span> current<span class="token punctuation">.</span>path<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token string">&quot;/&quot;</span><span class="token punctuation">;</span>
+    <span class="token keyword">var</span> path <span class="token operator">=</span> parsedPath<span class="token punctuation">.</span>path
+        <span class="token operator">?</span> <span class="token function">resolvePath</span><span class="token punctuation">(</span>parsedPath<span class="token punctuation">.</span>path<span class="token punctuation">,</span> basePath<span class="token punctuation">,</span> append <span class="token operator">||</span> next<span class="token punctuation">.</span>append<span class="token punctuation">)</span>
+        <span class="token operator">:</span> basePath<span class="token punctuation">;</span>
+
+    <span class="token comment">// 处理 query 和 hash</span>
+    <span class="token comment">// ...</span>
+
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+        _normalized<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+        path<span class="token operator">:</span> path<span class="token punctuation">,</span>
+        query<span class="token operator">:</span> query<span class="token punctuation">,</span>
+        hash<span class="token operator">:</span> hash<span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>从源码中可知，处理字符串最终进入的逻辑为 <code>resolvePath</code>. 从传参可以看出，该函数处理（resolve）跳转路径与当前路径的跳转关系：</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">resolvePath</span><span class="token punctuation">(</span>
+    relative<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span>
+    base<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span>
+    append<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span>
+<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> firstChar <span class="token operator">=</span> relative<span class="token punctuation">.</span><span class="token function">charAt</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>firstChar <span class="token operator">===</span> <span class="token string">&quot;/&quot;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> relative<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>firstChar <span class="token operator">===</span> <span class="token string">&quot;?&quot;</span> <span class="token operator">||</span> firstChar <span class="token operator">===</span> <span class="token string">&quot;#&quot;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> base <span class="token operator">+</span> relative<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">const</span> stack <span class="token operator">=</span> base<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">&quot;/&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// remove trailing segment if:</span>
+    <span class="token comment">// - not appending</span>
+    <span class="token comment">// - appending to trailing slash (last segment is empty)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>append <span class="token operator">||</span> <span class="token operator">!</span>stack<span class="token punctuation">[</span>stack<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        stack<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// resolve relative path</span>
+    <span class="token keyword">const</span> segments <span class="token operator">=</span> relative<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">^\/</span><span class="token regex-delimiter">/</span></span><span class="token punctuation">,</span> <span class="token string">&quot;&quot;</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">&quot;/&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> segments<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">const</span> segment <span class="token operator">=</span> segments<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>segment <span class="token operator">===</span> <span class="token string">&quot;..&quot;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            stack<span class="token punctuation">.</span><span class="token function">pop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>segment <span class="token operator">!==</span> <span class="token string">&quot;.&quot;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            stack<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>segment<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// ensure leading slash</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>stack<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">!==</span> <span class="token string">&quot;&quot;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        stack<span class="token punctuation">.</span><span class="token function">unshift</span><span class="token punctuation">(</span><span class="token string">&quot;&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> stack<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">&quot;/&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>从源码中可知，当 relative 的首字符为 <code>/</code> 时会直接返回 relative， 此时 relative 作为绝对路径跳转（不考虑 base)。</p> <p>注释 remove trailing segment 说明当未指定 append 时，base 中的最后一个路径会被略去，因此单独传入字符串后的跳转页面与原页面为兄弟关系（<code>/path/src</code> push(&quot;dest&quot;) 跳转至 <code>/path/dest</code>）</p> <p>从源码还能得知 push 方法也可以用于在同一页面跳转锚点（hash）或更新 query 参数，仅需要传入以 <code>#</code> 或 <code>?</code> 打头的字符串即可。</p></div> <footer><!----> <hr> <!----></footer></article> <div class="sticker vuepress-toc"><div class="vuepress-toc-item vuepress-toc-h2 active"><a href="#数据类型" title="数据类型">数据类型</a></div><div class="vuepress-toc-item vuepress-toc-h2"><a href="#字符串的内部处理" title="字符串的内部处理">字符串的内部处理</a></div><div class="vuepress-toc-item vuepress-toc-h3"><a href="#normalizelocation-源码" title="normalizeLocation 源码">normalizeLocation 源码</a></div></div></div></div> <footer class="footer" data-v-3d9deeb8><div class="footer-left-wrap" data-v-3d9deeb8><ul class="contact" data-v-3d9deeb8></ul></div> <div class="footer-right-wrap" data-v-3d9deeb8><ul class="copyright" data-v-3d9deeb8></ul></div></footer></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.39946fff.js" defer></script><script src="/assets/js/4.78102bb1.js" defer></script><script src="/assets/js/1.fd3ac483.js" defer></script><script src="/assets/js/19.98fef327.js" defer></script>
+  </body>
+</html>
